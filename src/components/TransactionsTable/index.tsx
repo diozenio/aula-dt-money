@@ -40,6 +40,14 @@ function TransactionRow({ amount, category, date, title, type }: Transaction) {
 export function TransactionsTable() {
   const { transactions } = useTransactions();
 
+  if (!transactions || transactions.length === 0) {
+    return (
+      <div className="mt-16 w-full text-center">
+        <p className="text-type-2">Nenhuma transação encontrada.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="mt-16 w-full">
       <table className="w-full text-left border-separate border-spacing-y-2">
