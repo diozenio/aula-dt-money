@@ -5,7 +5,7 @@ export function useCreateTransaction() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (transaction: Omit<Transaction, "date">) => {
+    mutationFn: async (transaction: Omit<Transaction, "data">) => {
       const response = await fetch(
         process.env.NEXT_PUBLIC_API_URL + "/transaction",
         {
