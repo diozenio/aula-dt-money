@@ -1,9 +1,9 @@
-export type TransactionType = "income" | "outcome";
+export type TransactionType = "INCOME" | "OUTCOME";
 
 export interface Transaction {
   title: string;
-  amount: number;
+  price: number;
   category: string;
-  date: string;
+  data: string;
   type: TransactionType;
 }

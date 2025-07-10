@@ -10,8 +10,8 @@ import {
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { Input } from "@/components/Input";
 import { useRef, useState } from "react";
-import { useTransactions } from "@/hooks/useTransactions";
-import { Transaction, TransactionType } from "@/types/Transaction";
+import { useCreateTransaction } from "@/hooks/useCreateTransaction";
+import { TransactionType } from "@/types/Transaction";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
@@ -21,7 +21,7 @@ export function CreateTransactionModal() {
   const formRef = useRef<HTMLFormElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [transactionType, setTransactionType] = useState<TransactionType>();
-  const { addTransaction } = useTransactions();
+  const { mutate: createTransaction } = useCreateTransaction();
 
   const handleSubmit = () => {
     const form = formRef.current;
@@ -36,18 +36,21 @@ export function CreateTransactionModal() {
         transactionType &&
         String(data.amount).match(NUMBER_REGEX)
       ) {
-        const transaction: Transaction = {
-          title: String(data.name),
-          amount: Number(data.amount),
-          category: String(data.category),
-          type: transactionType,
-          date: new Date().toLocaleDateString("pt-BR"),
-        };
-
-        addTransaction(transaction);
-        form.reset();
-        setTransactionType(undefined);
-        setIsOpen(false);
+        createTransaction(
+          {
+            title: String(data.name),
+            price: Number(data.amount),
+            category: String(data.category),
+            type: transactionType,
+          },
+          {
+            onSuccess: () => {
+              form.reset();
+              setTransactionType(undefined);
+              setIsOpen(false);
+            },
+          }
+        );
       }
     }
   };
@@ -88,9 +91,9 @@ export function CreateTransactionModal() {
               type="button"
               className={cn(
                 "bg-transparent h-16 rounded-sm border-input-border border-2 flex items-center justify-center gap-2 hover:opacity-80 cursor-pointer transition-all duration-300 ease-in-out",
-                transactionType === "income" && "border-income"
+                transactionType === "INCOME" && "border-income"
               )}
-              onClick={() => handleTransactionType("income")}
+              onClick={() => handleTransactionType("INCOME")}
             >
               <Image src={"/income.png"} width={32} height={32} alt="Entrada" />
               Entrada
@@ -99,16 +102,11 @@ export function CreateTransactionModal() {
               type="button"
               className={cn(
                 "bg-transparent h-16 rounded-sm border-input-border border-2 flex items-center justify-center gap-2 hover:opacity-80 cursor-pointer transition-all duration-300 ease-in-out",
-                transactionType === "outcome" && "border-outcome"
+                transactionType === "OUTCOME" && "border-outcome"
               )}
-              onClick={() => handleTransactionType("outcome")}
+              onClick={() => handleTransactionType("OUTCOME")}
             >
-              <Image
-                src={"/outcome.png"}
-                width={32}
-                height={32}
-                alt="Entrada"
-              />
+              <Image src={"/outcome.png"} width={32} height={32} alt="Saída" />
               Saída
             </button>
 

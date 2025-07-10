@@ -1,23 +1,28 @@
 "use client";
+
 import { useTransactions } from "@/hooks/useTransactions";
 import { Card } from "../Card";
 
 export function CardContainer() {
-  const { transactions } = useTransactions();
+  const { data: transactions } = useTransactions();
 
-  const summary = transactions.reduce(
+  const summary = transactions?.reduce(
     (acc, transaction) => {
-      if (transaction.type === "income") {
-        acc.income += transaction.amount;
-        acc.total += transaction.amount;
+      if (transaction.type === "INCOME") {
+        acc.income += transaction.price;
+        acc.total += transaction.price;
       } else {
-        acc.outcome += transaction.amount;
-        acc.total -= transaction.amount;
+        acc.outcome += transaction.price;
+        acc.total -= transaction.price;
       }
       return acc;
     },
     { income: 0, outcome: 0, total: 0 }
-  );
+  ) || {
+    income: 0,
+    outcome: 0,
+    total: 0,
+  };
 
   return (
     <div className="flex justify-between">

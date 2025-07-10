@@ -1,4 +1,5 @@
 "use client";
+
 import { useTransactions } from "@/hooks/useTransactions";
 import { cn } from "@/lib/utils";
 import { Transaction } from "@/types/Transaction";
@@ -16,29 +17,37 @@ function TableHead() {
   );
 }
 
-function TransactionRow({ amount, category, date, title, type }: Transaction) {
-  const amountColor = type === "outcome" ? "text-outcome" : "text-income";
+function TransactionRow({ price, category, data, title, type }: Transaction) {
+  const amountColor = type === "OUTCOME" ? "text-outcome" : "text-income";
 
   return (
     <tr className="h-16">
       <td className="bg-white rounded-l-sm pl-8 text-type-1">{title}</td>
       <td className={cn(`bg-white`, amountColor)}>
-        {type == "income" ? "" : "-"}{" "}
-        {amount.toLocaleString("pt-BR", {
+        {type == "INCOME" ? "" : "-"}{" "}
+        {price.toLocaleString("pt-BR", {
           style: "currency",
           currency: "BRL",
         })}
       </td>
       <td className="bg-white text-type-2">{category}</td>
       <td className="bg-white rounded-r-sm pr-8 w-0 whitespace-nowrap text-type-2">
-        {date}
+        {new Date(data).toLocaleDateString("pt-BR")}
       </td>
     </tr>
   );
 }
 
 export function TransactionsTable() {
-  const { transactions } = useTransactions();
+  const { data: transactions, isLoading } = useTransactions();
+
+  if (isLoading) {
+    return (
+      <div className="mt-16 w-full text-center">
+        <p className="text-type-2">Carregando transações...</p>
+      </div>
+    );
+  }
 
   if (!transactions || transactions.length === 0) {
     return (
