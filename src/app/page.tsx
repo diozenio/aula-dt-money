@@ -1,7 +1,7 @@
 import { BodyContainer } from "@/components/BodyContainer";
 import { CardContainer } from "@/components/CardContainer";
 import { Header } from "@/components/Header";
-import { TransactionsTable } from "@/components/TransactionsTable";
+import { TransactionsPagination } from "@/components/TransactionsPagination";
 
 export default function Home() {
   return (
@@ -9,7 +9,7 @@ export default function Home() {
       <Header />
       <BodyContainer>
         <CardContainer />
-        <TransactionsTable />
+        <TransactionsPagination />
       </BodyContainer>
     </div>
   );

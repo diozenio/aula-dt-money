@@ -1,8 +1,6 @@
 "use client";
 
-import { useDeleteTransaction } from "@/hooks/useDeleteTransaction";
 import { useTransactions } from "@/hooks/useTransactions";
-import { useUpdateTransaction } from "@/hooks/useUpdateTransaction";
 import { cn } from "@/lib/utils";
 import { Transaction } from "@/types/Transaction";
 
@@ -52,9 +50,15 @@ export function TransactionRow(transaction: Transaction) {
   );
 }
 
-export function TransactionsTable() {
-  const { data: transactions, isLoading } = useTransactions();
+interface TransactionsTableProps {
+  transactions: Transaction[];
+  isLoading: boolean;
+}
 
+export function TransactionsTable({
+  transactions,
+  isLoading,
+}: TransactionsTableProps) {
   if (isLoading) {
     return (
       <div className="mt-16 w-full text-center">

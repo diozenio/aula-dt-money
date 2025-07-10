@@ -18,6 +18,7 @@ export function useDeleteTransaction() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["transaction-summary"] });
     },
   });
 }
