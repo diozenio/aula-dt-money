@@ -1,8 +1,13 @@
 "use client";
 
+import { useDeleteTransaction } from "@/hooks/useDeleteTransaction";
 import { useTransactions } from "@/hooks/useTransactions";
+import { useUpdateTransaction } from "@/hooks/useUpdateTransaction";
 import { cn } from "@/lib/utils";
 import { Transaction } from "@/types/Transaction";
+
+import { EditTransactionDialog } from "../EditTransactionDialog";
+import { DeleteTransactionDialog } from "../DeleteTransactionDialog";
 
 function TableHead() {
   return (
@@ -11,28 +16,37 @@ function TableHead() {
         <th className="font-normal text-type-2 pb-5 pl-8">Título</th>
         <th className="font-normal text-type-2 pb-5">Preço</th>
         <th className="font-normal text-type-2 pb-5">Categoria</th>
-        <th className="font-normal text-type-2 pb-5 pr-8">Data</th>
+        <th className="font-normal text-type-2 pb-5">Data</th>
+        <th className="font-normal text-type-2 pb-5 pr-8">Ações</th>
       </tr>
     </thead>
   );
 }
 
-function TransactionRow({ price, category, data, title, type }: Transaction) {
-  const amountColor = type === "OUTCOME" ? "text-outcome" : "text-income";
+export function TransactionRow(transaction: Transaction) {
+  const amountColor =
+    transaction.type === "OUTCOME" ? "text-outcome" : "text-income";
 
   return (
     <tr className="h-16">
-      <td className="bg-white rounded-l-sm pl-8 text-type-1">{title}</td>
+      <td className="bg-white rounded-l-sm pl-8 text-type-1">
+        {transaction.title}
+      </td>
       <td className={cn(`bg-white`, amountColor)}>
-        {type == "INCOME" ? "" : "-"}{" "}
-        {price.toLocaleString("pt-BR", {
+        {transaction.type === "INCOME" ? "" : "-"}{" "}
+        {transaction.price.toLocaleString("pt-BR", {
           style: "currency",
           currency: "BRL",
         })}
       </td>
-      <td className="bg-white text-type-2">{category}</td>
-      <td className="bg-white rounded-r-sm pr-8 w-0 whitespace-nowrap text-type-2">
-        {new Date(data).toLocaleDateString("pt-BR")}
+      <td className="bg-white text-type-2">{transaction.category}</td>
+      <td className="bg-white text-type-2">
+        {new Date(transaction.data).toLocaleDateString("pt-BR")}
+      </td>
+      <td className="bg-white rounded-r-sm space-x-2 flex items-center h-16">
+        <EditTransactionDialog transaction={transaction} />
+
+        <DeleteTransactionDialog transaction={transaction} />
       </td>
     </tr>
   );
@@ -62,11 +76,8 @@ export function TransactionsTable() {
       <table className="w-full text-left border-separate border-spacing-y-2">
         <TableHead />
         <tbody>
-          {transactions?.map((transaction, index) => (
-            <TransactionRow
-              key={`${transaction.title}-${index}`}
-              {...transaction}
-            />
+          {transactions?.map((transaction) => (
+            <TransactionRow key={transaction.id} {...transaction} />
           ))}
         </tbody>
       </table>

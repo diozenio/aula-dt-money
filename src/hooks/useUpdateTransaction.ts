@@ -1,22 +1,25 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Transaction } from "@/types/Transaction";
 
-export function useCreateTransaction() {
+export function useUpdateTransaction() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (transaction: Omit<Transaction, "data" | "id">) => {
+    mutationFn: async ({
+      id,
+      ...data
+    }: Partial<Transaction> & { id: string }) => {
       const response = await fetch(
-        process.env.NEXT_PUBLIC_API_URL + "/transaction",
+        process.env.NEXT_PUBLIC_API_URL + `/transaction/${id}`,
         {
-          method: "POST",
+          method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(transaction),
+          body: JSON.stringify(data),
         }
       );
 
       if (!response.ok) {
-        throw new Error("Failed to create transaction");
+        throw new Error("Erro ao editar transação");
       }
 
       return response.json();
